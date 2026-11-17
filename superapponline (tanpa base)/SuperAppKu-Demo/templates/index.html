@@ -1,0 +1,845 @@
+
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <meta name="theme-color" content="#163e35">
+
+  <title>
+    SuperAppKu Demo — Bergerak, menikmati, bersama.
+  </title>
+
+  <!-- GOOGLE FONTS -->
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  >
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- LEAFLET CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  >
+
+  <!-- CSS SUPERAPPKU -->
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/style.css') }}"
+  >
+</head>
+
+<body>
+
+  <div class="app-shell">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+      <a
+        class="brand"
+        href="#"
+        aria-label="SuperAppKu Demo"
+      >
+        <span class="brand-symbol">✳</span>
+
+        <span>
+          <strong>
+            superapp<span class="brand-accent">ku</span>
+          </strong>
+
+          <small>THE EVERYDAY COMPANION</small>
+        </span>
+      </a>
+
+      <div class="sidebar-label">
+        WORKSPACE
+      </div>
+
+      <nav aria-label="Navigasi utama">
+
+        <button
+          class="nav-item active"
+          data-page="customer"
+          type="button"
+        >
+          <span>◈</span>
+          Customer
+          <small>Pesan layanan</small>
+        </button>
+
+        <button
+          class="nav-item"
+          data-page="driver"
+          type="button"
+        >
+          <span>↗</span>
+          Driver
+          <small>Ambil order</small>
+        </button>
+
+        <button
+          class="nav-item"
+          data-page="seller"
+          type="button"
+        >
+          <span>▣</span>
+          Penjual
+          <small>Kelola pesanan</small>
+        </button>
+
+        <button
+          class="nav-item"
+          data-page="tracking"
+          type="button"
+        >
+          <span>◎</span>
+          Lacak
+          <small>Simulasi GPS</small>
+        </button>
+
+      </nav>
+
+      <div class="sidebar-bottom">
+
+        <span class="live-dot"></span>
+        Demo mode aktif
+
+        <p>Tanpa login · Tanpa database</p>
+
+        <button
+          id="resetDemo"
+          class="text-button"
+          type="button"
+        >
+          ↻ Reset data demo
+        </button>
+
+      </div>
+
+    </aside>
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="main">
+
+      <!-- TOPBAR -->
+
+      <header class="topbar">
+
+        <span class="crumb">
+          SUPERAPPKU /
+          <strong id="pageCrumb">CUSTOMER</strong>
+        </span>
+
+        <div class="top-actions">
+
+          <span class="demo-pill">
+            ✦ DEMO EDITION
+          </span>
+
+          <span class="avatar">SA</span>
+
+        </div>
+
+      </header>
+
+      <div class="content">
+
+        <!-- ================= HERO ================= -->
+
+        <section class="hero">
+
+          <div class="hero-copy">
+
+            <span class="eyebrow">
+              ✦ LAYANAN HARIAN DALAM SATU TEMPAT
+            </span>
+
+            <h1>
+              Hari yang lebih mudah,
+              <br>
+              <em>perjalanan yang indah.</em>
+            </h1>
+
+            <p>
+              Pesan perjalanan, temukan makanan favorit,
+              dan nikmati musik — semuanya dalam satu pengalaman.
+            </p>
+
+            <button
+              class="hero-btn"
+              data-go="customer"
+              type="button"
+            >
+              Mulai eksplorasi
+              <span>↗</span>
+            </button>
+
+          </div>
+
+          <div class="hero-art" aria-hidden="true">
+
+            <div class="art-orbit orbit-one"></div>
+            <div class="art-orbit orbit-two"></div>
+
+            <div class="art-center">✳</div>
+
+            <div class="art-chip art-chip-a">
+              🛵 <span>Ride</span>
+            </div>
+
+            <div class="art-chip art-chip-b">
+              ☕ <span>Food</span>
+            </div>
+
+            <div class="art-chip art-chip-c">
+              ♫ <span>Music</span>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ================= CUSTOMER ================= -->
+
+        <section
+          id="customer"
+          class="page active"
+          aria-label="Customer"
+        >
+
+          <div class="section-heading">
+
+            <div>
+
+              <span class="eyebrow dark">
+                DISCOVER YOUR DAY
+              </span>
+
+              <h2>
+                Apa yang ingin kamu lakukan?
+              </h2>
+
+            </div>
+
+            <span class="subtle">
+              Area demo: Padalarang, Bandung Barat
+            </span>
+
+          </div>
+
+          <!-- SERVICE SWITCH -->
+
+          <div class="service-switch">
+
+            <button
+              class="service-tab active"
+              data-service="ride"
+              type="button"
+            >
+              🛵 &nbsp; SuperRide
+            </button>
+
+            <button
+              class="service-tab"
+              data-service="food"
+              type="button"
+            >
+              🍱 &nbsp; SuperFood
+            </button>
+
+          </div>
+
+          <!-- ================= SUPERRIDE ================= -->
+
+          <div
+            id="ridePanel"
+            class="service-panel"
+          >
+
+            <div class="two-col">
+
+              <!-- FORM PERJALANAN -->
+
+              <div class="panel-card">
+
+                <div class="panel-title">
+
+                  <span class="round-icon">↗</span>
+
+                  <div>
+                    <h3>Perjalanan baru</h3>
+                    <p>Ke mana tujuanmu hari ini?</p>
+                  </div>
+
+                </div>
+
+                <label for="pickup">
+                  Lokasi jemput
+                </label>
+
+                <select id="pickup">
+
+                  <option value="Jatimekar">
+                    Jatimekar, Padalarang
+                  </option>
+
+                  <option value="Stasiun Padalarang">
+                    Stasiun Padalarang
+                  </option>
+
+                  <option value="Alun-alun Padalarang">
+                    Alun-alun Padalarang
+                  </option>
+
+                  <option value="Kota Baru Parahyangan">
+                    Kota Baru Parahyangan
+                  </option>
+
+                </select>
+
+                <label for="destination">
+                  Lokasi tujuan
+                </label>
+
+                <select id="destination">
+
+                  <option value="Stasiun Padalarang">
+                    Stasiun Padalarang
+                  </option>
+
+                  <option value="Kota Baru Parahyangan">
+                    Kota Baru Parahyangan
+                  </option>
+
+                  <option value="Alun-alun Padalarang">
+                    Alun-alun Padalarang
+                  </option>
+
+                  <option value="Jatimekar">
+                    Jatimekar, Padalarang
+                  </option>
+
+                </select>
+
+                <div class="fare-box">
+
+                  <span>Estimasi tarif demo</span>
+
+                  <strong id="fare">
+                    Rp 15.000
+                  </strong>
+
+                </div>
+
+                <button
+                  id="bookRide"
+                  class="primary-btn"
+                  type="button"
+                >
+                  Pesan SuperRide
+                  <span>→</span>
+                </button>
+
+                <p class="hint">
+                  Simulasi saja — tidak memesan driver sungguhan.
+                </p>
+
+              </div>
+
+              <!-- PETA CUSTOMER -->
+
+              <div class="panel-card map-panel">
+
+                <div class="map-heading">
+
+                  <h3>Area perjalanan</h3>
+
+                  <span class="tiny-tag">
+                    LIVE PREVIEW
+                  </span>
+
+                </div>
+
+                <div
+                  id="rideMap"
+                  class="map"
+                  aria-label="Peta area perjalanan Padalarang"
+                ></div>
+
+                <p class="map-note">
+                  📍 Peta menggunakan OpenStreetMap
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- ================= SUPERFOOD ================= -->
+
+          <div
+            id="foodPanel"
+            class="service-panel hidden"
+          >
+
+            <div class="food-layout">
+
+              <div>
+
+                <div class="food-intro">
+
+                  <h3>Menu pilihan hari ini</h3>
+
+                  <p>
+                    Rasa lokal, bikin hari makin spesial.
+                  </p>
+
+                </div>
+
+                <div
+                  id="menuGrid"
+                  class="menu-grid"
+                ></div>
+
+              </div>
+
+              <!-- KERANJANG -->
+
+              <div class="panel-card cart">
+
+                <h3>
+                  Keranjang kamu
+
+                  <span
+                    id="cartCount"
+                    class="cart-count"
+                  >
+                    0
+                  </span>
+                </h3>
+
+                <div
+                  id="cartItems"
+                  class="cart-items"
+                >
+                  <p class="empty">
+                    Belum ada makanan di keranjang.
+                  </p>
+                </div>
+
+                <div class="cart-footer">
+
+                  <div class="total-line">
+
+                    <span>Total</span>
+
+                    <strong id="cartTotal">
+                      Rp 0
+                    </strong>
+
+                  </div>
+
+                  <button
+                    id="checkout"
+                    class="primary-btn"
+                    type="button"
+                  >
+                    Checkout pesanan
+                    <span>→</span>
+                  </button>
+
+                  <p class="hint">
+                    Tidak ada pembayaran sungguhan.
+                  </p>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- PESANAN TERBARU -->
+
+          <div class="section-heading order-title">
+
+            <div>
+
+              <span class="eyebrow dark">
+                YOUR ACTIVITY
+              </span>
+
+              <h2>Pesanan terbaru</h2>
+
+            </div>
+
+          </div>
+
+          <div
+            id="customerOrders"
+            class="order-list"
+          ></div>
+
+        </section>
+
+        <!-- ================= DRIVER ================= -->
+
+        <section
+          id="driver"
+          class="page"
+          aria-label="Driver"
+        >
+
+          <div class="section-heading">
+
+            <div>
+
+              <span class="eyebrow dark">
+                DRIVER WORKSPACE
+              </span>
+
+              <h2>Dashboard Driver</h2>
+
+            </div>
+
+            <span class="tiny-tag green">
+              ● Siap menerima order
+            </span>
+
+          </div>
+
+          <div class="stat-grid">
+
+            <div class="stat-card">
+
+              <span>Pesanan masuk</span>
+
+              <strong id="driverIncoming">0</strong>
+
+              <small>Menunggu diterima</small>
+
+            </div>
+
+            <div class="stat-card">
+
+              <span>Perjalanan aktif</span>
+
+              <strong id="driverActive">0</strong>
+
+              <small>Dalam proses</small>
+
+            </div>
+
+            <div class="stat-card">
+
+              <span>Pesanan selesai</span>
+
+              <strong id="driverDone">0</strong>
+
+              <small>Demo hari ini</small>
+
+            </div>
+
+          </div>
+
+          <div class="section-heading compact">
+
+            <div>
+
+              <h3>Daftar order driver</h3>
+
+              <p>
+                Terima pesanan yang dibuat Customer.
+              </p>
+
+            </div>
+
+          </div>
+
+          <div
+            id="driverOrders"
+            class="order-list"
+          ></div>
+
+        </section>
+
+        <!-- ================= PENJUAL ================= -->
+
+        <section
+          id="seller"
+          class="page"
+          aria-label="Penjual"
+        >
+
+          <div class="section-heading">
+
+            <div>
+
+              <span class="eyebrow dark">
+                MERCHANT WORKSPACE
+              </span>
+
+              <h2>Dashboard Penjual</h2>
+
+            </div>
+
+            <span class="tiny-tag green">
+              ▣ Dapur demo buka
+            </span>
+
+          </div>
+
+          <div class="stat-grid">
+
+            <div class="stat-card">
+
+              <span>Pesanan makanan</span>
+
+              <strong id="sellerTotal">0</strong>
+
+              <small>Semua order</small>
+
+            </div>
+
+            <div class="stat-card">
+
+              <span>Perlu disiapkan</span>
+
+              <strong id="sellerPending">0</strong>
+
+              <small>Menunggu dapur</small>
+
+            </div>
+
+            <div class="stat-card">
+
+              <span>Siap diambil</span>
+
+              <strong id="sellerReady">0</strong>
+
+              <small>Menunggu driver</small>
+
+            </div>
+
+          </div>
+
+          <div class="section-heading compact">
+
+            <div>
+
+              <h3>Pesanan masuk</h3>
+
+              <p>
+                Siapkan makanan sebelum driver mengantarkan.
+              </p>
+
+            </div>
+
+          </div>
+
+          <div
+            id="sellerOrders"
+            class="order-list"
+          ></div>
+
+        </section>
+
+        <!-- ================= TRACKING GPS ================= -->
+
+        <section
+          id="tracking"
+          class="page"
+          aria-label="Lacak"
+        >
+
+          <div class="section-heading">
+
+            <div>
+
+              <span class="eyebrow dark">
+                ON THE MOVE
+              </span>
+
+              <h2>Pelacakan perjalanan</h2>
+
+            </div>
+
+            <span class="tiny-tag">
+              SIMULATED GPS
+            </span>
+
+          </div>
+
+          <div class="two-col tracking-layout">
+
+            <!-- PANEL TRACKING -->
+
+            <div class="panel-card">
+
+              <h3>Lacak order kamu</h3>
+
+              <p class="muted">
+                Pilih pesanan untuk melihat simulasi
+                driver bergerak menuju tujuan.
+              </p>
+
+              <label for="trackOrder">
+                Pilih pesanan
+              </label>
+
+              <select id="trackOrder"></select>
+
+              <div
+                id="trackingInfo"
+                class="tracking-info"
+              ></div>
+
+              <button
+                id="startTracking"
+                class="primary-btn"
+                type="button"
+              >
+                ▶ Mulai simulasi GPS
+              </button>
+
+              <p class="hint">
+                Posisi bergerak secara animasi,
+                bukan GPS asli.
+              </p>
+
+            </div>
+
+            <!-- PETA TRACKING -->
+
+            <div class="panel-card map-panel">
+
+              <div class="map-heading">
+
+                <h3>Posisi driver</h3>
+
+                <span class="tiny-tag green">
+                  ● DEMO TRACKING
+                </span>
+
+              </div>
+
+              <div
+                id="trackingMap"
+                class="map"
+                aria-label="Peta simulasi posisi driver"
+              ></div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ================= SPOTIFY ================= -->
+
+        <section class="music-section">
+
+          <div class="music-heading">
+
+            <div class="music-icon">
+              ♫
+            </div>
+
+            <div>
+
+              <span class="eyebrow dark">
+                YOUR SOUNDTRACK
+              </span>
+
+              <h2>
+                Temani harimu dengan musik
+              </h2>
+
+              <p>
+                Putar playlist favorit sambil
+                menikmati SuperAppKu.
+              </p>
+
+            </div>
+
+            <span class="spotify-label">
+              ● Spotify
+            </span>
+
+          </div>
+
+          <iframe
+            title="Spotify Playlist"
+            style="border-radius:12px"
+            src="https://open.spotify.com/embed/playlist/37i9dQZF1DX4WYpdgoIcn6?utm_source=generator"
+            width="100%"
+            height="152"
+            frameborder="0"
+            allowfullscreen
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+          ></iframe>
+
+          <p class="hint">
+            Pemutaran dapat dibatasi oleh akun,
+            wilayah, atau browser Spotify.
+          </p>
+
+        </section>
+
+        <!-- ================= FOOTER ================= -->
+
+        <footer>
+
+          © 2026 SuperAppKu
+
+          <span>
+            Made for demonstration ✳ No real transactions
+          </span>
+
+        </footer>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- NOTIFIKASI -->
+  <div
+    id="toast"
+    class="toast"
+    role="status"
+    aria-live="polite"
+  ></div>
+
+  <!-- LEAFLET JAVASCRIPT -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- JAVASCRIPT SUPERAPPKU -->
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+</body>
+</html>
